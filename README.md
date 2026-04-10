@@ -1,11 +1,95 @@
-# STM32F10x-LM75A-Library
-LM75A temperature sensor library that you can use with STM32F10x series microcontrollers. 
+# STM32F10x LM75A Temperature Sensor Library
 
-# Launching the LM75A sensor in your algorithm
-First, integrate libraries. Then call the function Lm75a_Config (). In this function, enter 0 or 1 according to the solder condition of your A0, A1 and A2 pins. Enter the value 1 if you soldered the pins to the VCC, 0 if you soldered them to GND. 
+A lightweight I2C driver library for the **NXP LM75A** digital temperature sensor, targeting **STM32F10x** series microcontrollers using the Standard Peripheral Library (SPL).
 
-# Reading the temperature data
-The library allows you to read as celcius and fahrenheit. If you want to read in Celsius value, assign the data returned by the get_temperature_c () function to a variable you define as float or double. In the data you want to read as fahrenheit, assign the data returned from the get_temperature_f () function to the same variable.
+## Features
 
-# Notes
-The library provides you with the delay function. You can call this function by typing LM75a_Delay (). It also receives data in milliseconds as input.
+- Configurable I2C address via hardware address pins (A0, A1, A2) — supports all 8 possible addresses
+- Temperature reading in both **Celsius** and **Fahrenheit**
+- Built-in millisecond delay utility using SysTick
+- Bare-metal I2C communication — no HAL/LL dependency, direct register-level control
+- 9-bit resolution (0.5C steps) from the LM75A's 2-byte temperature register
+
+## Hardware
+
+| Pin | Connection |
+|-----|-----------|
+| SDA | PB7 (I2C1) |
+| SCL | PB6 (I2C1) |
+| A0/A1/A2 | VCC (1) or GND (0) |
+| VCC | 3.3V |
+
+```
+STM32F103C8T6
+    PB6 (SCL) ──────┐
+    PB7 (SDA) ────┐ │
+                  │ │
+              ┌───┴─┴───┐
+              │  LM75A   │
+              │          │
+              │ A0 A1 A2 │
+              └──┬──┬──┬─┘
+                GND/VCC
+```
+
+## Quick Start
+
+```c
+#include "lm75a_lib.h"
+
+int main(void) {
+    // A0=GND, A1=GND, A2=GND → address 0x90
+    Lm75a_Config(0, 0, 0);
+
+    while (1) {
+        float temp_c = get_temperature_c();
+        float temp_f = get_temperature_f();
+
+        Lm75a_Delay(500); // 500ms delay
+    }
+}
+```
+
+## API
+
+| Function | Description |
+|----------|-------------|
+| `Lm75a_Config(a0, a1, a2)` | Initialize I2C1 and set sensor address based on pin configuration |
+| `get_temperature_c()` | Read temperature in Celsius (0.5C resolution) |
+| `get_temperature_f()` | Read temperature in Fahrenheit |
+| `Lm75a_Delay(ms)` | Blocking delay in milliseconds (SysTick-based) |
+
+## Address Map
+
+| A2 | A1 | A0 | I2C Address |
+|----|----|----|------------|
+| 0  | 0  | 0  | 0x90 |
+| 0  | 0  | 1  | 0x92 |
+| 0  | 1  | 0  | 0x94 |
+| 0  | 1  | 1  | 0x96 |
+| 1  | 0  | 0  | 0x98 |
+| 1  | 0  | 1  | 0x9A |
+| 1  | 1  | 0  | 0x9C |
+| 1  | 1  | 1  | 0x9E |
+
+## Project Structure
+
+```
+LM75A_Lib_V1.1/
+    lm75a_lib.h    — Header with function prototypes
+    lm75a_lib.c    — I2C init, temperature read, delay implementation
+```
+
+## Requirements
+
+- STM32F10x Standard Peripheral Library
+- ARM GCC or Keil MDK toolchain
+- STM32F103C8T6 (Blue Pill) or compatible
+
+## Authors
+
+Developed at **ITU IEEE RAS Committee** by LIEK Software Team.
+
+## License
+
+MIT
