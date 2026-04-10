@@ -4,7 +4,8 @@
 |           Gorkem Aktas                                                       |
 |           Fatih Yilmaz                                                       |
 |           Emir Danisman                                                      |
-|           Ozgur Karaaslan                                                    |
+|           Ozgur Karaaslan
+			Berke Tezgocen|
 |   @date 9 January 2021            	                                       |
 |   @documentedDate 28 March 2021                                              |
 |   @version 1.1                                                               |
