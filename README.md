@@ -50,6 +50,17 @@ int main(void) {
 }
 ```
 
+### Overtemperature Alarm
+
+```c
+// Trigger OS pin when temp exceeds 45C, reset at 40C
+Lm75a_SetAlarmThresholds(45.0f, 40.0f);
+
+// Enter low-power mode when not reading
+Lm75a_SetShutdown(1);  // ~1uA current draw
+Lm75a_SetShutdown(0);  // wake up, resume sampling
+```
+
 ## API
 
 | Function | Description |
@@ -58,6 +69,12 @@ int main(void) {
 | `get_temperature_c()` | Read temperature in Celsius (0.5C resolution) |
 | `get_temperature_f()` | Read temperature in Fahrenheit |
 | `Lm75a_Delay(ms)` | Blocking delay in milliseconds (SysTick-based) |
+| `Lm75a_ReadConfig()` | Read the configuration register |
+| `Lm75a_WriteRegister(reg, val)` | Write a byte to any register |
+| `Lm75a_SetShutdown(enable)` | Enter/exit low-power shutdown mode |
+| `Lm75a_SetAlarmThresholds(t_os, t_hyst)` | Set overtemperature shutdown and hysteresis thresholds (Celsius) |
+| `Lm75a_ReadTos()` | Read the T_OS threshold |
+| `Lm75a_ReadThyst()` | Read the T_HYST threshold |
 
 ## Address Map
 
